@@ -55,7 +55,6 @@ def main():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
     running = True
-    dt = 0
 
     reset_game(screen)
     draw_board(screen)
