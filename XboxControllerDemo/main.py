@@ -38,6 +38,16 @@ def main():
                     print("Left bumper pressed")
                 elif event.button == 5:
                     print("Right bumper pressed")
+                elif event.button == 6:
+                    print("Back button pressed")
+                elif event.button == 7:
+                    print("Start button pressed")
+                elif event.button == 8:
+                    print("Left stick in pressed")
+                elif event.button == 9:
+                    print("Right stick in pressed")
+                elif event.button == 10:
+                    print("Guide button pressed")
                 
 
         pygame.display.flip()
