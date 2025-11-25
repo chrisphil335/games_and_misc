@@ -1,92 +1,132 @@
 import pygame
 
-LINE_WIDTH = 5
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 500
+FPS = 60
+BOARD = [
+    ["", "", ""],
+    ["", "", ""],
+    ["", "", ""]
+]
 CELL_WIDTH = SCREEN_WIDTH / 3
 CELL_HEIGHT = SCREEN_HEIGHT / 3
-BOARD = [
-    ['', '', ''], 
-    ['', '', ''], 
-    ['', '', '']
-]
-PLAYER_1 = "X"
-PLAYER_2 = "O"
+LINE_WIDTH = 5
+BACKGROUND_COLOR = "green"
+GRID_COLOR = "yellow"
+X_COLOR = "blue"
+O_COLOR = "red"
 
 
-
-def draw_board(screen):
+def draw_grid(screen):
     # horizontals
-    pygame.draw.line(screen, "yellow", pygame.Vector2(0, SCREEN_HEIGHT / 3), pygame.Vector2(SCREEN_WIDTH, SCREEN_HEIGHT / 3), width = LINE_WIDTH)
-    pygame.draw.line(screen, "yellow", pygame.Vector2(0, SCREEN_HEIGHT / 3 * 2), pygame.Vector2(SCREEN_WIDTH, SCREEN_HEIGHT / 3 * 2), width = LINE_WIDTH)
+    pygame.draw.line(screen, GRID_COLOR, pygame.Vector2(0, CELL_HEIGHT), pygame.Vector2(SCREEN_WIDTH, CELL_HEIGHT), width = LINE_WIDTH)
+    pygame.draw.line(screen, GRID_COLOR, pygame.Vector2(0, CELL_HEIGHT * 2), pygame.Vector2(SCREEN_WIDTH, CELL_HEIGHT * 2), width = LINE_WIDTH)
     # verticals
-    pygame.draw.line(screen, "yellow", pygame.Vector2(SCREEN_WIDTH / 3, 0), pygame.Vector2(SCREEN_WIDTH / 3, SCREEN_HEIGHT), width = LINE_WIDTH)
-    pygame.draw.line(screen, "yellow", pygame.Vector2(SCREEN_WIDTH / 3 * 2, 0), pygame.Vector2(SCREEN_WIDTH / 3 * 2, SCREEN_HEIGHT), width = LINE_WIDTH)
+    pygame.draw.line(screen, GRID_COLOR, pygame.Vector2(CELL_WIDTH, 0), pygame.Vector2(CELL_WIDTH, SCREEN_HEIGHT), width = LINE_WIDTH)
+    pygame.draw.line(screen, GRID_COLOR, pygame.Vector2(CELL_WIDTH * 2, 0), pygame.Vector2(CELL_WIDTH * 2, SCREEN_HEIGHT), width = LINE_WIDTH)
 
 
-def draw_x(screen, start_x, start_y, x_width, x_height):
-    pygame.draw.line(screen, "red", pygame.Vector2(start_x, start_y), pygame.Vector2(start_x + x_width, start_y + x_height), width = LINE_WIDTH)
-    pygame.draw.line(screen, "red", pygame.Vector2(start_x + x_width, start_y), pygame.Vector2(start_x, start_y + x_height), width = LINE_WIDTH)
+def switch_player(current_player):
+    if current_player == "X":
+        return "O"
+    elif current_player == "O":
+        return "X"
+    
+
+def draw_x(screen, x, y, width, height):
+    pygame.draw.line(screen, X_COLOR, pygame.Vector2(x, y), pygame.Vector2(x + width, y + height), width = LINE_WIDTH)
+    pygame.draw.line(screen, X_COLOR, pygame.Vector2(x + width, y), pygame.Vector2(x, y + height), width = LINE_WIDTH)
 
 
-def draw_o(screen, start_x, start_y, x_width, x_height):
-    pygame.draw.line(screen, "red", pygame.Vector2(start_x, start_y), pygame.Vector2(start_x + x_width, start_y + x_height), width = LINE_WIDTH)
+def draw_o(screen, x, y, width, height):
+    pygame.draw.circle(screen, O_COLOR, pygame.Vector2(x + width / 2, y + height / 2), min(width, height) / 3, width = LINE_WIDTH)
 
 
-def winner_check(current_player):
-    if BOARD[0][0] == BOARD[0][1] == BOARD[0][2] != "":
-        print(current_player)
-        return True
+def draw_pieces(screen):
+    for row in range(3):
+        for column in range(3):
+            cell = BOARD[row][column]
+            start_x = column * CELL_WIDTH
+            start_y = row * CELL_HEIGHT
+            if cell == "X":
+                draw_x(screen, start_x, start_y, CELL_WIDTH, CELL_HEIGHT)
+            elif cell == "O":
+                draw_o(screen, start_x, start_y, CELL_WIDTH, CELL_HEIGHT)
 
 
-def reset_game(screen):
-    screen.fill("green")
+def check_winner(board):
+    for row in board:
+        if row[0] == row[1] == row[2] != "":
+            return row[0]
+    for column in range(3):
+        if board[0][column] == board[1][column] == board[2][column] != "":
+            return board[0][column]
+    if board[0][0] == board[1][1] == board[2][2] != "":
+        return board[0][0]
+    if board[0][2] == board[1][1] == board[2][0] != "":
+        return board[0][2]
+    return None
 
 
-def change_current_player(current_player):
-    if current_player == PLAYER_1:
-        return PLAYER_2
-    elif current_player == PLAYER_2:
-        return PLAYER_1
+def is_draw(board):
+    for row in board:
+        for cell in row:
+            if cell == "":
+                return False
+    return True
+
+
+def reset_board():
+    for row in BOARD:
+        for i in range(len(row)):
+            row[i] = ""
 
 
 def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    pygame.display.set_caption("Tictactoe")
+
     clock = pygame.time.Clock()
     running = True
+    game_over = False
 
-    reset_game(screen)
-    draw_board(screen)
-    current_player = PLAYER_1
+    current_player = "X"
 
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            elif not game_over and event.type == pygame.MOUSEBUTTONDOWN:
                 column = int(event.pos[0] // CELL_WIDTH)
                 row = int(event.pos[1] // CELL_HEIGHT)
-                if current_player == "X":
-                    draw_x(screen, column * CELL_WIDTH, row * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT)
-                    BOARD[row][column] = "X"
-                elif current_player == "O":
-                    draw_o(screen, column * CELL_WIDTH, row * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT)
-                    BOARD[row][column] = "O"
-            if winner_check(current_player):
-                running = False
-            current_player = change_current_player(current_player)
-                
+                print(f"({row}, {column})")
+                if BOARD[row][column] == "":
+                    BOARD[row][column] = current_player
+                    winner = check_winner(BOARD)
+                    if winner:
+                        print(f"{current_player} wins!")
+                        game_over = True
+                    elif is_draw(BOARD):
+                        print("Draw!")
+                        game_over = True
+                    else:
+                        current_player = switch_player(current_player)
+                    print(BOARD)
+                else:
+                    print("occupied")
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    reset_board()
+                    current_player = "X"
+                    game_over = False
 
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_q]:
-            reset_game(screen)
+        screen.fill(BACKGROUND_COLOR)
+        draw_grid(screen)
+        draw_pieces(screen)
+        pygame.display.flip() 
+        clock.tick(FPS)
 
-        
-
-        pygame.display.flip()
-
-        dt = clock.tick(60) / 1000
     pygame.quit()
 
 
