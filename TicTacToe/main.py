@@ -43,8 +43,8 @@ def draw_o(screen, x, y, width, height):
 
 
 def draw_pieces(screen):
-    for row in range(3):
-        for column in range(3):
+    for row in range(len(BOARD)):
+        for column in range(len(BOARD[0])):
             cell = BOARD[row][column]
             start_x = column * CELL_WIDTH
             start_y = row * CELL_HEIGHT
@@ -58,7 +58,7 @@ def check_winner(board):
     for row in board:
         if row[0] == row[1] == row[2] != "":
             return row[0]
-    for column in range(3):
+    for column in range(len(board[0])):
         if board[0][column] == board[1][column] == board[2][column] != "":
             return board[0][column]
     if board[0][0] == board[1][1] == board[2][2] != "":
@@ -78,8 +78,8 @@ def is_draw(board):
 
 def reset_board():
     for row in BOARD:
-        for i in range(len(row)):
-            row[i] = ""
+        for column in range(len(row)):
+            row[column] = ""
 
 
 def main():
