@@ -1,23 +1,23 @@
 import pygame
 import random
 
-SCREEN_WIDTH = 500
-SCREEN_HEIGHT = 500
+SCREEN_WIDTH = 900
+SCREEN_HEIGHT = 600
 FPS = 60
 BACKGROUND_COLOR = (0, 0, 0) # Black
 WHITE = (255, 255, 255)
 BALL_SIZE = 20
 PADDLE_HEIGHT = SCREEN_HEIGHT // 5
-PADDLE_WIDTH = PADDLE_HEIGHT // 5
+PADDLE_WIDTH = PADDLE_HEIGHT // 15
 PADDLE_SPEED = 5
-PADDLE_OFFSET = 30
+PADDLE_OFFSET = PADDLE_WIDTH
 
 
 def draw(screen, ball, player1, player2):
     screen.fill(BACKGROUND_COLOR)
-    pygame.draw.rect(screen, WHITE, ball)
-    pygame.draw.rect(screen, WHITE, player1)
-    pygame.draw.rect(screen, WHITE, player2)
+    pygame.draw.rect(screen, WHITE, ball, border_radius = BALL_SIZE // 2)
+    pygame.draw.rect(screen, WHITE, player1, border_radius = PADDLE_WIDTH // 2)
+    pygame.draw.rect(screen, WHITE, player2, border_radius = PADDLE_WIDTH // 2)
     pygame.display.flip()
 
 

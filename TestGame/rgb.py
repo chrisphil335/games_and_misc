@@ -33,7 +33,6 @@ def main():
             elif event.type == pygame.KEYUP:
                 background_color = WHITE
                 
-
         screen.fill(background_color)
 
         pygame.display.flip()
@@ -41,7 +40,6 @@ def main():
         clock.tick(FPS)
 
     pygame.quit()
-
 
 
 if __name__ == "__main__":

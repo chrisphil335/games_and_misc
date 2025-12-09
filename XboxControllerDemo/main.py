@@ -2,6 +2,7 @@ import pygame
 
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 500
+FPS = 60
 
 
 def main():
@@ -49,10 +50,9 @@ def main():
                 elif event.button == 10:
                     print("Guide button pressed")
                 
-
         pygame.display.flip()
 
-        clock.tick(60)
+        clock.tick(FPS)
 
     pygame.quit()
 

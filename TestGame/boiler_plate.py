@@ -19,11 +19,9 @@ def main():
                 running = False
 
         pygame.display.flip()
-        
         clock.tick(FPS)
 
     pygame.quit()
-
 
 
 if __name__ == "__main__":
